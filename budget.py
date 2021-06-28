@@ -72,12 +72,12 @@ def create_spend_chart(categories):
         sum += cat_withdrawals
 
     for cat_name in cat_dict:
-        cat_dict[cat_name] = cat_dict[cat_name]/sum *100
+        cat_dict[cat_name] = floor(cat_dict[cat_name]/sum*10)*10
         
     print('Cat Dict:', cat_dict)
 
     title = 'Percentage spent by category\n'
-    
+
     return '{}'.format(
         title
     )
