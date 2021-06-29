@@ -1,4 +1,4 @@
-from math import floor
+from math import e, floor
 
 class Category:
     print_width = 30
@@ -74,30 +74,30 @@ def create_spend_chart(categories):
     for cat_name in cat_dict:
         cat_dict[cat_name] = floor(cat_dict[cat_name]/sum*10)*10
         
-    print('Cat Dict:', cat_dict)
+    graph_lines = 'Percentage spent by category\n'
+    for n in range(10, -1, -1):
+        graph_lines += '{:>3}|'.format(str(n*10))
+        for cat in cat_dict.values():
+            graph_lines += '{:^3}'.format('o' if cat >= n*10 else '')
+        graph_lines += ' \n'
 
-    title = 'Percentage spent by category\n'
+    names = '{}{}'.format(' '*4, 
+                          '-'*(3*len(cat_dict)+1))
 
-    return '{}'.format(
-        title
-    )
+    is_writing_names = True
+    index = 0
+    while is_writing_names:
+        is_writing_names = False
+        chars = []
+        for cat_name in cat_dict.keys():
+            c = ''
+            if index < len(cat_name):
+                c = cat_name[index]
+                is_writing_names = True
+            chars.append(c)
+        index += 1
+        if is_writing_names:
+            names += '\n    {:^3}{:^3}{:^3} '.format(chars[0], chars[1], chars[2])
 
-
-g = Category('gamin')
-
-g.deposit(10, 'Achat 1')
-g.deposit(30, 'ah oui le super achatttee')
-g.deposit(13, 'Achat 2')
-g.deposit(40.00, 'Achat 3')
-g.deposit(1000, 'Achat 4')
-
-g.withdraw(10, 'withdraw')
-
-c = Category('couille')
-
-g.transfer(100, c)
-
-print(g.ledger[-1], g.get_balance())
-print(c.ledger[-1], c.get_balance())
-
-print(g)
+    return '{}{}'.format(graph_lines,
+                         names)
