@@ -63,26 +63,20 @@ def get_withdrawals(categorie):
         if operation['amount'] < 0: withdrawals += operation['amount']
     return withdrawals
 
-def create_spend_chart(categories):
-    cat_dict = {}
-    sum = 0
-    for categorie in categories:
-        cat_withdrawals = -get_withdrawals(categorie)
-        cat_dict[categorie.name] = cat_withdrawals
-        sum += cat_withdrawals
-
-    for cat_name in cat_dict:
-        cat_dict[cat_name] = floor(cat_dict[cat_name]/sum*10)*10
-        
+def get_graph_lines(cat_dict):
     graph_lines = 'Percentage spent by category\n'
+
     for n in range(10, -1, -1):
         graph_lines += '{:>3}|'.format(str(n*10))
         for cat in cat_dict.values():
             graph_lines += '{:^3}'.format('o' if cat >= n*10 else '')
         graph_lines += ' \n'
 
+    return graph_lines
+
+def get_names_lines(cat_dict):
     names = '{}{}'.format(' '*4, 
-                          '-'*(3*len(cat_dict)+1))
+                            '-'*(3*len(cat_dict)+1))
 
     is_writing_names = True
     index = 0
@@ -98,6 +92,23 @@ def create_spend_chart(categories):
         index += 1
         if is_writing_names:
             names += '\n    {:^3}{:^3}{:^3} '.format(chars[0], chars[1], chars[2])
+    
+    return names
+
+def create_spend_chart(categories):
+    cat_dict = {}
+    sum = 0
+    for categorie in categories:
+        cat_withdrawals = -get_withdrawals(categorie)
+        cat_dict[categorie.name] = cat_withdrawals
+        sum += cat_withdrawals
+
+    for cat_name in cat_dict:
+        cat_dict[cat_name] = floor(cat_dict[cat_name]/sum*10)*10
+        
+    graph_lines = get_graph_lines(cat_dict)
+    
+    names_lines = get_names_lines(cat_dict)
 
     return '{}{}'.format(graph_lines,
-                         names)
+                         names_lines)
